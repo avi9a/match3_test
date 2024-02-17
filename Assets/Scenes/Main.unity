@@ -438,6 +438,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2000122933}
   - component: {fileID: 2000122932}
+  - component: {fileID: 2000122934}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -464,12 +465,11 @@ MonoBehaviour:
   blocks:
   - {fileID: 21300000, guid: 2a2b23a6c43b54f19b4bec87c19af66a, type: 3}
   - {fileID: 21300000, guid: bf0215a3b3b8f450486823fb14e7f7b0, type: 3}
-  GameBoardTransform: {fileID: 1406334822}
+  gameBoardTransform: {fileID: 1406334822}
   boardBlock: {fileID: 4842472931849366668, guid: c6ec95653f05c422e9cbaf8bf05ab5bc, type: 3}
   width: 5
   height: 2
-  gBlock: {fileID: 0}
-  replaceSprites: []
+  blockValue: 010000000100000001000000020000000200000002000000
 --- !u!4 &2000122933
 Transform:
   m_ObjectHideFlags: 0
@@ -485,6 +485,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2000122934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000122931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff28900551a324898b85224bdb9e2ca4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2115632220
 GameObject:
   m_ObjectHideFlags: 0

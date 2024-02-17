@@ -43,7 +43,7 @@ public class Move : MonoBehaviour
 
             Vector2 position = gameManager.GetPositionFromPoint(cube.index);
             if (!newIndex.Equals(cube.index))
-                position += Point.Mult(new Point(add.x, -add.y), 16).ToVector();
+                position += Point.Mult(new Point(add.x, -add.y), 1).ToVector();
             cube.MovePosition(position);
         }
     }

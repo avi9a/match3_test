@@ -11,17 +11,18 @@ public class GameManager : MonoBehaviour
 {
     public Board board;
     public Sprite[] blocks;
-    [Header("UI Elements")] public RectTransform GameBoardTransform;
+    [Header("UI Elements")] public RectTransform gameBoardTransform;
     [Header("Prefabs")] public GameObject boardBlock;
     public int width = 5;
     public int height = 5;
     public GameBoard[,] gameBoard;
 
     private Random random;
+    public int[] blockValue;
 
-    public Block gBlock;
+    // public Block gBlock;
     
-    public List<Sprite> replaceSprites;
+    // public List<Sprite> replaceSprites;
 
     private void Start()
     {
@@ -46,17 +47,20 @@ public class GameManager : MonoBehaviour
 
     public void InstantiateBoard()
     {
+        int index = 0;
         for (int x = 0; x < width; x++)
         {
             for (int y = height - 1; y >= 0; y--)
             {
-                int value = gameBoard[x, y].value;
-                if (value <= 0) continue;
-                GameObject p = Instantiate(boardBlock, GameBoardTransform);
-                Cube cube = p.GetComponent<Cube>();
-                RectTransform rect = p.GetComponent<RectTransform>();
-                rect.anchoredPosition = new Vector2(-120 + (64 * x), -170 - (64 * y));
-                cube.Initialize(value,  new Point(x, y), blocks[value - 1]);
+                    int value = gameBoard[x, y].value;
+                    if (value <= 0) continue;
+                    GameObject p = Instantiate(boardBlock, gameBoardTransform);
+                    Cube cube = p.GetComponent<Cube>();
+                    RectTransform rect = p.GetComponent<RectTransform>();
+                    rect.anchoredPosition = new Vector2(-120 + (64 * x), -170 - (64 * y));
+                    value = blockValue[index];
+                    cube.Initialize(value,  new Point(x, y), blocks[value - 1]);
+                    index++;
             }
         }
     }

@@ -42,12 +42,12 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void MovePosition(Vector2 move)
     {
-        rect.anchoredPosition += move * Time.deltaTime * 16f;
+        rect.anchoredPosition += move * Time.deltaTime * 1f;
     }
     
     public void MovePositionTo(Vector2 move)
     {
-        rect.anchoredPosition += Vector2.Lerp(rect.anchoredPosition, move, Time.deltaTime * 16f);
+        rect.anchoredPosition += Vector2.Lerp(rect.anchoredPosition, move, Time.deltaTime * 1f);
     }
 
     public bool UpdateBlock()
