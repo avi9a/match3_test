@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = System.Random;
 
 [Serializable]
@@ -17,6 +18,10 @@ public class GameManager : MonoBehaviour
     public GameBoard[,] gameBoard;
 
     private Random random;
+
+    public Block gBlock;
+    
+    public List<Sprite> replaceSprites;
 
     private void Start()
     {
@@ -34,7 +39,7 @@ public class GameManager : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
-                gameBoard[x, y] = new GameBoard((board.board[y].elements[x]) ? - 1 : FillBlock(), new Point(x, y));
+                gameBoard[x, y] = new GameBoard(board.board[y].elements[x] ? - 1 : FillBlock(), new Point(x, y));
             }
         }
     }
@@ -43,14 +48,15 @@ public class GameManager : MonoBehaviour
     {
         for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = height - 1; y >= 0; y--)
             {
                 int value = gameBoard[x, y].value;
                 if (value <= 0) continue;
                 GameObject p = Instantiate(boardBlock, GameBoardTransform);
-                // BlockPiece block = p.GetComponent<BlockPiece>();
+                Cube cube = p.GetComponent<Cube>();
                 RectTransform rect = p.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(-120 + (64 * x), -170 - (64 * y));
+                cube.Initialize(value,  new Point(x, y), blocks[value - 1]);
             }
         }
     }
@@ -62,10 +68,11 @@ public class GameManager : MonoBehaviour
             available.Add(i + 1);
         foreach (var i in remove)
             available.Remove(i);
-
+    
         if (available.Count <= 0) return 0;
         return available[random.Next(0, available.Count)];
     }
+    
     public void VerifyBoard()
     {
         List<int> remove;
@@ -101,6 +108,11 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < 20; i++)
             seed += acceptableChars[UnityEngine.Random.Range(0, acceptableChars.Length)];
         return seed;
+    }
+
+    public Vector2 GetPositionFromPoint(Point point)
+    {
+        return new Vector2(-120 + (64 * point.x), -170 - (64 * point.y));
     }
 
     private List<Point> isConnnected(Point point, bool main)
@@ -212,7 +224,7 @@ public class GameManager : MonoBehaviour
 
     private int FillBlock()
     {
-        int value = 1;
+        int value = 0;
         value = (random.Next(0, 100) / (100 / blocks.Length)) + 1;
         return value;
     }

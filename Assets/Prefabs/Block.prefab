@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 2729498362419453203}
   - component: {fileID: 5742586681547355743}
   - component: {fileID: 7046828173565733068}
+  - component: {fileID: -5454242075243629563}
   m_Layer: 5
-  m_Name: WaterBlock
+  m_Name: Block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b6c7424b3f7c74e65834b7470eebdf22, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bf0215a3b3b8f450486823fb14e7f7b0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -75,3 +76,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &-5454242075243629563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4842472931849366668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 858a62a4f127d4b38ae1fc31ef730a6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 0
+  position: {x: 0, y: 0}
+  rect: {fileID: 0}

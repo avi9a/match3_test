@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Board // : ScriptableObject
+public class Board
 {
     public static int row;
     public static int collumn;
@@ -14,7 +14,5 @@ public class Board // : ScriptableObject
     {
         public bool[] elements;
     }
-
-    public Grid grid;
     public boardData[] board = new boardData[row + collumn];
 }
