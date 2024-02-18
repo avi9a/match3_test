@@ -10,7 +10,7 @@ public class Move : MonoBehaviour
 
     private Cube cube;
     private Point newIndex;
-    private Vector2 mauseStart;
+    private Vector2 mouseStart;
 
     private void Awake()
     {
@@ -26,24 +26,24 @@ public class Move : MonoBehaviour
     {
         if (cube != null)
         {
-            Vector2 dir = ((Vector2)Input.mousePosition - mauseStart);
+            Vector2 dir = (Vector2)Input.mousePosition - mouseStart;
             Vector2 normDir = dir.normalized;
             Vector2 adsDir = new Vector2(Mathf.Abs(dir.x), Mathf.Abs(dir.y));
-
+    
             newIndex = Point.Clone(cube.index);
             Point add = Point.Zero;
             if (dir.magnitude > 32)
             {
                 if (adsDir.x > adsDir.y)
-                    add = (new Point((normDir.x > 0) ? 1 : -1, 0));
+                    add = new Point((normDir.x > 0) ? 1 : -1, 0);
                 else if (adsDir.y > adsDir.x)
-                    add = (new Point(0, (normDir.y > 0) ? 1 : -1));
+                    add = new Point(0, (normDir.y > 0) ? -1 : 1);
             }
             newIndex.Add(add);
-
+    
             Vector2 position = gameManager.GetPositionFromPoint(cube.index);
             if (!newIndex.Equals(cube.index))
-                position += Point.Mult(add, 16).ToVector();
+                position += Point.Mult(new Point(add.x, -add.y), 16).ToVector();
             cube.MovePosition(position);
         }
     }
@@ -52,13 +52,18 @@ public class Move : MonoBehaviour
     {
         if (cube != null) return;
         cube = piece;
-        mauseStart = Input.mousePosition;
+        mouseStart = Input.mousePosition;
     }
 
     public void DropBlock()
     {
         if (cube == null) return;
-        gameManager.ResetBlock(cube);
+        if (!newIndex.Equals(cube.index))
+        {
+            gameManager.FlipBlocks(cube.index, newIndex);
+        }
+        else 
+            gameManager.ResetBlock(cube);
         cube = null;
     }
 }

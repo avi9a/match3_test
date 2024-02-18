@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
             Cube cube = update[i];
             if (!cube.UpdateBlock()) finishedUpdating.Add(cube);
         }
-
+    
         for (int i = 0; i < finishedUpdating.Count; i++)
         {
             Cube cube = finishedUpdating[i];
@@ -124,12 +124,33 @@ public class GameManager : MonoBehaviour
         cube.ResetPosition();
         cube.flipped = null;
         update.Add(cube);
+        Debug.Log("Reset");
     }
 
     public void FlipBlocks(Point one, Point two)
     {
+        if (GetValue(one) < 0) return;
         GameBoard pointOne = GetBlockAtPoint(one);
         Cube cubeOne = pointOne.GetCube();
+        if (GetValue(two) > 0)
+        {
+            GameBoard pointTwo = GetBlockAtPoint(two);
+            Cube cubeTwo = pointTwo.GetCube();
+            pointOne.SetCube(cubeTwo);
+            pointTwo.SetCube(cubeOne);
+            cubeOne.flipped = cubeTwo;
+            cubeTwo.flipped = cubeOne;
+            var cubeOneIndex = cubeOne.transform.GetSiblingIndex();
+            var cubeTwoIndex = cubeTwo.transform.GetSiblingIndex();
+            update.Add(cubeOne);
+            update.Add(cubeTwo);
+            cubeOne.transform.SetSiblingIndex(cubeTwoIndex);
+            cubeTwo.transform.SetSiblingIndex(cubeOneIndex);
+        }
+        else
+        {
+            ResetBlock(cubeOne);
+        }
     }
     
     private List<Point> isConnnected(Point point, bool main)
@@ -271,14 +292,11 @@ public class GameManager : MonoBehaviour
     private string GetRandomSeed()
     {
         string seed = "";
-        string acceptableChars = "ABCDIFJabcdifj123456789";
-        for (int i = 0; i < 20; i++)
-            seed += acceptableChars[UnityEngine.Random.Range(0, acceptableChars.Length)];
         return seed;
     }
     
     public Vector2 GetPositionFromPoint(Point point)
     {
-        return new Vector2(-120 + (64 * point.x), -170 - (64 * point.y));
+        return new Vector2(-point.x, point.y);
     }
 }
