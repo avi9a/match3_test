@@ -11,11 +11,13 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     [HideInInspector] public Vector2 position;
     [HideInInspector] public RectTransform rect;
+    [HideInInspector] public Cube flipped;
     private bool isUpdating;
     private Image image;
 
     public void Initialize(int v, Point point, Sprite piece)
     {
+        flipped = null;
         image = GetComponent<Image>();
         rect = GetComponent<RectTransform>();
         value = v;
@@ -52,7 +54,18 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public bool UpdateBlock()
     {
-        return true;
+        if (Vector3.Distance(rect.anchoredPosition, position) > 1)
+        {
+            MovePositionTo(position);
+            isUpdating = true;
+            return true;
+        }
+        else
+        {
+            rect.anchoredPosition = position;
+            isUpdating = false;
+            return false;
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)

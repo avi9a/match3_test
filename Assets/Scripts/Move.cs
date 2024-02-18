@@ -26,7 +26,7 @@ public class Move : MonoBehaviour
     {
         if (cube != null)
         {
-            Vector2 dir = (Vector2)Input.mousePosition - mauseStart;
+            Vector2 dir = ((Vector2)Input.mousePosition - mauseStart);
             Vector2 normDir = dir.normalized;
             Vector2 adsDir = new Vector2(Mathf.Abs(dir.x), Mathf.Abs(dir.y));
 
@@ -43,7 +43,7 @@ public class Move : MonoBehaviour
 
             Vector2 position = gameManager.GetPositionFromPoint(cube.index);
             if (!newIndex.Equals(cube.index))
-                position += Point.Mult(new Point(add.x, -add.y), 1).ToVector();
+                position += Point.Mult(add, 16).ToVector();
             cube.MovePosition(position);
         }
     }
@@ -58,6 +58,7 @@ public class Move : MonoBehaviour
     public void DropBlock()
     {
         if (cube == null) return;
+        gameManager.ResetBlock(cube);
         cube = null;
     }
 }

@@ -469,7 +469,9 @@ MonoBehaviour:
   boardBlock: {fileID: 4842472931849366668, guid: c6ec95653f05c422e9cbaf8bf05ab5bc, type: 3}
   width: 5
   height: 2
-  blockValue: 010000000100000001000000020000000200000002000000
+  blockValues: 010000000100000001000000020000000200000002000000
+  anim1: {fileID: 9100000, guid: a71c50a7fe0c24cf9b7a5b112cef6298, type: 2}
+  anim2: {fileID: 9100000, guid: efe7b51e26c6f450e9605a2f1a106143, type: 2}
 --- !u!4 &2000122933
 Transform:
   m_ObjectHideFlags: 0

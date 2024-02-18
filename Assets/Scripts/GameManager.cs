@@ -18,19 +18,38 @@ public class GameManager : MonoBehaviour
     public GameBoard[,] gameBoard;
 
     private Random random;
-    public int[] blockValue;
+    public int[] blockValues;
 
-    // public Block gBlock;
-    
-    // public List<Sprite> replaceSprites;
+    private List<Cube> update;
+
+    private Animator animator;
+    public RuntimeAnimatorController anim1;
+    public RuntimeAnimatorController anim2;
 
     private void Start()
     {
         string seed = GetRandomSeed();
         random = new Random(seed.GetHashCode());
+        update = new List<Cube>();
         InitializeBoard();
         VerifyBoard();
         InstantiateBoard();
+    }
+
+    private void Update()
+    {
+        List<Cube> finishedUpdating = new List<Cube>();
+        for (int i = 0; i < update.Count; i++)
+        {
+            Cube cube = update[i];
+            if (!cube.UpdateBlock()) finishedUpdating.Add(cube);
+        }
+
+        for (int i = 0; i < finishedUpdating.Count; i++)
+        {
+            Cube cube = finishedUpdating[i];
+            update.Remove(cube);
+        }
     }
 
     public void InitializeBoard()
@@ -43,38 +62,6 @@ public class GameManager : MonoBehaviour
                 gameBoard[x, y] = new GameBoard(board.board[y].elements[x] ? - 1 : FillBlock(), new Point(x, y));
             }
         }
-    }
-
-    public void InstantiateBoard()
-    {
-        int index = 0;
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = height - 1; y >= 0; y--)
-            {
-                    int value = gameBoard[x, y].value;
-                    if (value <= 0) continue;
-                    GameObject p = Instantiate(boardBlock, gameBoardTransform);
-                    Cube cube = p.GetComponent<Cube>();
-                    RectTransform rect = p.GetComponent<RectTransform>();
-                    rect.anchoredPosition = new Vector2(-120 + (64 * x), -170 - (64 * y));
-                    value = blockValue[index];
-                    cube.Initialize(value,  new Point(x, y), blocks[value - 1]);
-                    index++;
-            }
-        }
-    }
-
-    int newValue(ref List<int> remove)
-    {
-        List<int> available = new List<int>();
-        for (int i = 0; i < blocks.Length; i++)
-            available.Add(i + 1);
-        foreach (var i in remove)
-            available.Remove(i);
-    
-        if (available.Count <= 0) return 0;
-        return available[random.Next(0, available.Count)];
     }
     
     public void VerifyBoard()
@@ -100,25 +87,51 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void SetValueAtPoint(Point point, int value)
+    public void InstantiateBoard()
     {
-        gameBoard[point.x, point.y].value = value;
+        int index = 0;
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = height - 1; y >= 0; y--)
+            {
+                GameBoard board = GetBlockAtPoint(new Point(x, y));
+                int value = board.value;
+                if (value <= 0) continue;
+                GameObject p = Instantiate(boardBlock, gameBoardTransform);
+                Cube cube = p.GetComponent<Cube>();
+                RectTransform rect = p.GetComponent<RectTransform>();
+                rect.anchoredPosition = new Vector2(-120 + (64 * x), -170 - (64 * y));
+                value = blockValues[index];
+                cube.Initialize(value,  new Point(x, y), blocks[value - 1]);
+                board.SetCube(cube);
+                index++;
+                
+                animator = cube.GetComponent<Animator>();
+                if (cube.value == 1)
+                {
+                    animator.runtimeAnimatorController = anim1;
+                }
+                else
+                {
+                    animator.runtimeAnimatorController = anim2;
+                }
+            }
+        }
     }
 
-    private string GetRandomSeed()
+    public void ResetBlock(Cube cube)
     {
-        string seed = "";
-        string acceptableChars = "ABCDIFJabcdifj123456789";
-        for (int i = 0; i < 20; i++)
-            seed += acceptableChars[UnityEngine.Random.Range(0, acceptableChars.Length)];
-        return seed;
+        cube.ResetPosition();
+        cube.flipped = null;
+        update.Add(cube);
     }
 
-    public Vector2 GetPositionFromPoint(Point point)
+    public void FlipBlocks(Point one, Point two)
     {
-        return new Vector2(-120 + (64 * point.x), -170 - (64 * point.y));
+        GameBoard pointOne = GetBlockAtPoint(one);
+        Cube cubeOne = pointOne.GetCube();
     }
-
+    
     private List<Point> isConnnected(Point point, bool main)
     {
         List<Point> connected = new List<Point>();
@@ -201,7 +214,7 @@ public class GameManager : MonoBehaviour
             connected.Add(point);
         return connected;
     }
-
+    
     private void AddPionts(ref List<Point> points, List<Point> add)
     {
         foreach (var point in add)
@@ -219,17 +232,53 @@ public class GameManager : MonoBehaviour
             if (doAdd) points.Add(point);
         }
     }
-
+    
+    private int FillBlock()
+    {
+        int value = 0;
+        value = (random.Next(0, 100) / (100 / blocks.Length)) + 1;
+        return value;
+    }
+    
     private int GetValue(Point point)
     {
         if (point.x < 0 || point.x >= width || point.y < 0 || point.y >= height) return -1;
         return gameBoard[point.x, point.y].value;
     }
 
-    private int FillBlock()
+    private void SetValueAtPoint(Point point, int value)
     {
-        int value = 0;
-        value = (random.Next(0, 100) / (100 / blocks.Length)) + 1;
-        return value;
+        gameBoard[point.x, point.y].value = value;
+    }
+
+    private GameBoard GetBlockAtPoint(Point point)
+    {
+        return gameBoard[point.x, point.y];
+    }
+    
+    private int newValue(ref List<int> remove)
+    {
+        List<int> available = new List<int>();
+        for (int i = 0; i < blocks.Length; i++)
+            available.Add(i + 1);
+        foreach (var i in remove)
+            available.Remove(i);
+    
+        if (available.Count <= 0) return 0;
+        return available[random.Next(0, available.Count)];
+    }
+    
+    private string GetRandomSeed()
+    {
+        string seed = "";
+        string acceptableChars = "ABCDIFJabcdifj123456789";
+        for (int i = 0; i < 20; i++)
+            seed += acceptableChars[UnityEngine.Random.Range(0, acceptableChars.Length)];
+        return seed;
+    }
+    
+    public Vector2 GetPositionFromPoint(Point point)
+    {
+        return new Vector2(-120 + (64 * point.x), -170 - (64 * point.y));
     }
 }
