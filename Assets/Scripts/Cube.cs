@@ -11,13 +11,11 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     [HideInInspector] public Vector2 position;
     [HideInInspector] public RectTransform rect;
-    [HideInInspector] public Cube flipped;
     private bool isUpdating;
     private Image image;
 
     public void Initialize(int v, Point point, Sprite piece)
     {
-        flipped = null;
         image = GetComponent<Image>();
         rect = GetComponent<RectTransform>();
         value = v;
@@ -44,12 +42,12 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void MovePosition(Vector2 move)
     {
-        rect.anchoredPosition += move * (Time.deltaTime * 1f);
+        rect.anchoredPosition += move * (Time.deltaTime * 10f);
     }
     
     public void MovePositionTo(Vector2 move)
     {
-        rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, move, Time.deltaTime * 1f);
+        rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, move, Time.deltaTime * 10f);
     }
 
     public bool UpdateBlock()

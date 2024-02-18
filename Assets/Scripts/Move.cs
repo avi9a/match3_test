@@ -60,7 +60,7 @@ public class Move : MonoBehaviour
         if (cube == null) return;
         if (!newIndex.Equals(cube.index))
         {
-            gameManager.FlipBlocks(cube.index, newIndex);
+            gameManager.FlipBlocks(cube.index, newIndex, true);
         }
         else 
             gameManager.ResetBlock(cube);

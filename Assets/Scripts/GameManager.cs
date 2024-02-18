@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public int[] blockValues;
 
     private List<Cube> update;
+    private List<FlippedBlock> flipped;
 
     private Animator animator;
     public RuntimeAnimatorController anim1;
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
         string seed = GetRandomSeed();
         random = new Random(seed.GetHashCode());
         update = new List<Cube>();
+        flipped = new List<FlippedBlock>();
         InitializeBoard();
         VerifyBoard();
         InstantiateBoard();
@@ -48,8 +50,52 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < finishedUpdating.Count; i++)
         {
             Cube cube = finishedUpdating[i];
+            FlippedBlock flip = GetFlipped(cube);
+            List<Point> connected = isConnnected(cube.index, true);
+            if (flip != null)
+            {
+                Cube flippedCube = flip.GetBlock(cube);
+                AddPionts(ref connected, isConnnected(flippedCube.index, true));
+            }
+            
+            if (connected.Count != 0)
+            {
+                foreach (Point point in connected)
+                {
+                    GameBoard block = GetBlockAtPoint(point);
+                    Cube cubePiece = block.GetCube();
+                    if (cubePiece != null)
+                        StartCoroutine(DestroyAnimation(cubePiece));
+                    block.SetCube(null);
+                }
+            }
+
+            flipped.Remove(flip);
             update.Remove(cube);
         }
+    }
+    
+    private IEnumerator DestroyAnimation(Cube cubePiece)
+    {
+        var cubeAnimator = cubePiece.GetComponent<Animator>();
+        cubeAnimator.SetBool("Destroy", true);
+        yield return new WaitForSeconds(1f);
+        cubePiece.gameObject.SetActive(false);
+    }
+
+    private FlippedBlock GetFlipped(Cube cube)
+    {
+        FlippedBlock flip = null;
+        for (int i = 0; i < flipped.Count; i++)
+        {
+            if (flipped[i].GetBlock(cube) != null)
+            {
+                flip = flipped[i];
+                break;
+            }
+        }
+
+        return flip;
     }
 
     public void InitializeBoard()
@@ -122,12 +168,11 @@ public class GameManager : MonoBehaviour
     public void ResetBlock(Cube cube)
     {
         cube.ResetPosition();
-        cube.flipped = null;
         update.Add(cube);
         Debug.Log("Reset");
     }
 
-    public void FlipBlocks(Point one, Point two)
+    public void FlipBlocks(Point one, Point two, bool main)
     {
         if (GetValue(one) < 0) return;
         GameBoard pointOne = GetBlockAtPoint(one);
@@ -138,8 +183,7 @@ public class GameManager : MonoBehaviour
             Cube cubeTwo = pointTwo.GetCube();
             pointOne.SetCube(cubeTwo);
             pointTwo.SetCube(cubeOne);
-            cubeOne.flipped = cubeTwo;
-            cubeTwo.flipped = cubeOne;
+            flipped.Add(new FlippedBlock(cubeOne, cubeTwo));
             var cubeOneIndex = cubeOne.transform.GetSiblingIndex();
             var cubeTwoIndex = cubeTwo.transform.GetSiblingIndex();
             update.Add(cubeOne);
