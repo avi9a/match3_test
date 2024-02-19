@@ -32,7 +32,7 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void ResetPosition()
     {
-        position = new Vector2(-120 + (64 * index.x), -170 - (64 * index.y));
+        position = new Vector2(50 + (64 * index.x), -50  - (64 * index.y));
     }
 
     private void UpdateName()

@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class GameBoard
+public class GameBoardCube
 {
-    public int value;
+    public int value; //1 = water, 2 = fire
     public Point index;
     public Cube cube;
 
-    public GameBoard(int pointValue, Point pointIndex)
+    public GameBoardCube(int pointValue, Point pointIndex)
     {
         value = pointValue;
         index = pointIndex;
