@@ -32,7 +32,7 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void ResetPosition()
     {
-        position = new Vector2(50 + (64 * index.x), -50  - (64 * index.y));
+        position = new Vector2(50 + (64 * index.x), -50 - (64 * index.y));
     }
 
     private void UpdateName()
@@ -42,7 +42,7 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void MovePosition(Vector2 move)
     {
-        rect.anchoredPosition += move * (Time.deltaTime * 10f);
+        rect.anchoredPosition += move * Time.deltaTime * 10f;
     }
     
     public void MovePositionTo(Vector2 move)
@@ -56,6 +56,7 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             MovePositionTo(position);
             isUpdating = true;
+            SaveSystem.SaveBlock(this);
             return true;
         }
         else
@@ -69,11 +70,11 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         if (isUpdating) return;
-        Move.instance.MoveBlock(this);
+        Move.Instance.MoveBlock(this);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        Move.instance.DropBlock();
+        Move.Instance.DropBlock();
     }
 }

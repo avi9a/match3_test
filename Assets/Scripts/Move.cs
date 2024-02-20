@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class Move : MonoBehaviour
 {
-    public static Move instance;
+    public static Move Instance;
     private GameManager gameManager;
 
-    private Cube cube;
+    private Cube movingCube;
     private Point newIndex;
     private Vector2 mouseStart;
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
     }
 
     private void Start()
@@ -24,46 +24,46 @@ public class Move : MonoBehaviour
 
     private void Update()
     {
-        if (cube != null)
+        if (movingCube != null)
         {
             Vector2 dir = (Vector2)Input.mousePosition - mouseStart;
             Vector2 normDir = dir.normalized;
-            Vector2 adsDir = new Vector2(Mathf.Abs(dir.x), Mathf.Abs(dir.y));
+            Vector2 absDir = new Vector2(Mathf.Abs(dir.x), Mathf.Abs(dir.y));
     
-            newIndex = Point.Clone(cube.index);
+            newIndex = Point.Clone(movingCube.index);
             Point add = Point.Zero;
             if (dir.magnitude > 32)
             {
-                if (adsDir.x > adsDir.y)
+                if (absDir.x > absDir.y)
                     add = new Point((normDir.x > 0) ? 1 : -1, 0);
-                else if (adsDir.y > adsDir.x)
+                else if (absDir.y > absDir.x)
                     add = new Point(0, (normDir.y > 0) ? -1 : 1);
             }
             newIndex.Add(add);
     
-            Vector2 position = gameManager.GetPositionFromPoint(cube.index);
-            if (!newIndex.Equals(cube.index))
+            Vector2 position = gameManager.GetPositionFromPoint(movingCube.index);
+            if (!newIndex.Equals(movingCube.index))
                 position += Point.Mult(new Point(add.x, -add.y), 16).ToVector();
-            cube.MovePosition(position);
+            movingCube.MovePositionTo(position);
         }
     }
 
     public void MoveBlock(Cube piece)
     {
-        if (cube != null) return;
-        cube = piece;
+        if (movingCube != null) return;
+        movingCube = piece;
         mouseStart = Input.mousePosition;
     }
 
     public void DropBlock()
     {
-        if (cube == null) return;
-        if (!newIndex.Equals(cube.index))
+        if (movingCube == null) return;
+        if (!newIndex.Equals(movingCube.index))
         {
-            gameManager.FlipBlocks(cube.index, newIndex, true);
+            gameManager.FlipBlocks(movingCube.index, newIndex);
         }
         else 
-            gameManager.ResetBlock(cube);
-        cube = null;
+            gameManager.ResetBlock(movingCube);
+        movingCube = null;
     }
 }
