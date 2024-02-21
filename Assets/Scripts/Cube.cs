@@ -40,10 +40,10 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         transform.name = "GameBoard [" + index.x + ", " + index.y + "]";
     }
 
-    public void MovePosition(Vector2 move)
-    {
-        rect.anchoredPosition += move * Time.deltaTime * 10f;
-    }
+    // public void MovePosition(Vector2 move)
+    // {
+    //     rect.anchoredPosition += move * Time.deltaTime * 10f;
+    // }
     
     public void MovePositionTo(Vector2 move)
     {
@@ -56,7 +56,7 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             MovePositionTo(position);
             isUpdating = true;
-            SaveSystem.SaveBlock(this);
+            // SaveSystem.SaveBlock(this);
             return true;
         }
         else

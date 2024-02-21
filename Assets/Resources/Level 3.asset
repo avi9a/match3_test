@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   board:
     board:
+    - elements: 0100010101
     - elements: 0000010101
-    - elements: 0000000001
-    - elements: 0000000001
+    - elements: 0000010001
     - elements: 0000000001
     - elements: 0000000001
     - elements: 0000000001
