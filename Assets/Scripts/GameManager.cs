@@ -35,14 +35,14 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
-    private void Load(Cube cube)
-    {
-        GameData data = SaveSystem.LoadBlock();
-        var cubePosition = cube.position;
-        cubePosition.x = data.position[0];
-        cubePosition.y = data.position[1];
-        cube.position = cubePosition;
-    }
+    // private void Load(Cube cube)
+    // {
+    //     GameData data = SaveSystem.LoadBlock();
+    //     var cubePosition = cube.position;
+    //     cubePosition.x = data.position[0];
+    //     cubePosition.y = data.position[1];
+    //     cube.position = cubePosition;
+    // }
     private void StartGame()
     {
         
@@ -214,7 +214,7 @@ public class GameManager : MonoBehaviour
                 animator = cube.GetComponent<Animator>();
                 animator.runtimeAnimatorController = cube.value == 1 ? level.animatorWater : level.animatorFire;
                 
-                Load(cube);
+                // Load(cube);
             }
         }
     }
@@ -245,6 +245,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("Move");
             GameBoardCube pointTwo = GetBlockAtPoint(two);
             Cube cubeTwo = pointTwo.GetCube();
             pointOne.SetCube(cubeTwo);
