@@ -56,27 +56,6 @@ public class GameManager : MonoBehaviour
         InstantiateBoard();
     }
 
-    public void RestartLevel()
-    {
-        SceneManager.LoadScene("Main");
-    }
-    
-    public void NextLevel()
-    {
-        level = Resources.Load<Level>("Level 2");
-        StartGame();
-    }
-
-    public void CompleteLevel()
-    {
-        var blocks = gameBoardTransform.GetComponentsInChildren<Cube>();
-        if (blocks.Length <= 0)
-        {
-            level = Resources.Load<Level>("Level 2");
-            StartGame();
-        }
-    }
-
     private void Update()
     {
         List<Cube> finishedUpdating = new List<Cube>();
@@ -101,8 +80,8 @@ public class GameManager : MonoBehaviour
             
             // GravityOnBoard();
             
-            if (connected.Count != 0)
-            {
+            // if (connected.Count != 0)
+            // {
                 foreach (Point point in connected)
                 {
                     GameBoardCube block = GetBlockAtPoint(point);
@@ -114,8 +93,8 @@ public class GameManager : MonoBehaviour
                 }
 
                 GravityOnBoard();
-            }
-            
+            // }
+
             // GravityOnBoard();
 
             flipped.Remove(flip);
@@ -150,6 +129,7 @@ public class GameManager : MonoBehaviour
                     if (nextValue == 0) continue;
                     if (nextValue != -1)
                     {
+                        Debug.Log("Gravity");
                         GameBoardCube get = GetBlockAtPoint(next);
                         Cube cube = get.GetCube();
                         block.SetCube(cube);
@@ -274,7 +254,7 @@ public class GameManager : MonoBehaviour
             update.Add(cubeOne);
             update.Add(cubeTwo);
             var indexXX = cubeOne.index.x;
-            var indexYY = cubeOne.index.y;
+            // var indexYY = cubeOne.index.y;
             if (indexX < indexXX)
             {
                 cubeOne.transform.SetSiblingIndex(index + 1);
@@ -283,17 +263,17 @@ public class GameManager : MonoBehaviour
             {
                 cubeOne.transform.SetSiblingIndex(index - 1);
             }
-            else if (indexX == indexXX)
-            {
-                if (indexY < indexYY)
-                {
-                    cubeOne.transform.SetSiblingIndex(index - 2);
-                }
-                else if (indexY > indexYY)
-                {
-                    cubeOne.transform.SetSiblingIndex(index + 2);
-                }
-            }
+            // else if (indexX == indexXX)
+            // {
+            //     if (indexY < indexYY)
+            //     {
+            //         cubeOne.transform.SetSiblingIndex(index - 2);
+            //     }
+            //     else if (indexY > indexYY)
+            //     {
+            //         cubeOne.transform.SetSiblingIndex(index + 2);
+            //     }
+            // }
         }
     }
     
@@ -442,5 +422,26 @@ public class GameManager : MonoBehaviour
     public Vector2 GetPositionFromPoint(Point point)
     {
         return new Vector2(50 + (64 * point.x), -50 - (64 * point.y));
+    }
+    
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene("Main");
+    }
+    
+    public void NextLevel()
+    {
+        level = Resources.Load<Level>("Level 2");
+        StartGame();
+    }
+
+    public void CompleteLevel()
+    {
+        var blocks = gameBoardTransform.GetComponentsInChildren<Cube>();
+        if (blocks.Length <= 0)
+        {
+            level = Resources.Load<Level>("Level 2");
+            StartGame();
+        }
     }
 }

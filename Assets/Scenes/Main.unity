@@ -725,7 +725,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: {fileID: 11400000, guid: 69aedc7f691c24aaaa9d6a24c513f024, type: 2}
-  levelNumber: 1
   gameBoardTransform: {fileID: 1406334822}
   boardBlock: {fileID: 4842472931849366668, guid: c6ec95653f05c422e9cbaf8bf05ab5bc, type: 3}
 --- !u!4 &2000122933
