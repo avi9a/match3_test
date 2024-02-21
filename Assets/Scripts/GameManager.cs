@@ -127,6 +127,10 @@ public class GameManager : MonoBehaviour
                     Point next = new Point(x, nexty);
                     int nextValue = GetValueAtPoint(next);
                     if (nextValue == 0) continue;
+                    if (nextValue == -1)
+                    {
+                        Debug.Log("nextValue == -1");
+                    }
                     if (nextValue != -1)
                     {
                         Debug.Log("Gravity");
@@ -201,7 +205,7 @@ public class GameManager : MonoBehaviour
             {
                 GameBoardCube board = GetBlockAtPoint(new Point(x, y));
                 int value = board.value;
-                if (value <= 0) continue;
+                if (value < 0) continue;
                 GameObject piece = Instantiate(boardBlock, gameBoardTransform);
                 Cube cube = piece.GetComponent<Cube>();
                 RectTransform rect = piece.GetComponent<RectTransform>();
@@ -245,7 +249,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Move");
+            Debug.Log("GetValueAtPoint(two) " + GetValueAtPoint(two));
             GameBoardCube pointTwo = GetBlockAtPoint(two);
             Cube cubeTwo = pointTwo.GetCube();
             pointOne.SetCube(cubeTwo);
@@ -399,6 +403,7 @@ public class GameManager : MonoBehaviour
 
     private GameBoardCube GetBlockAtPoint(Point point)
     {
+        Debug.Log("GetBlockAtPoint " + level.gameBoard[point.x, point.y].value);
         return level.gameBoard[point.x, point.y];
     }
     
