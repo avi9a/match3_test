@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
-                level.gameBoard[x, y] = new GameBoardCube(level.board.board[y].elements[x] ? -1 : 0, new Point(x, y));
+                level.gameBoard[x, y] = new GameBoardCube(level.board.board[y].elements[x] ? 0 : 1, new Point(x, y));
             }
         }
     }
@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
             {
                 GameBoardCube board = GetBlockAtPoint(new Point(x, y));
                 int value = board.value;
-                if (value < 0) continue;
+                if (value <= 0) continue;
                 GameObject piece = Instantiate(boardBlock, gameBoardTransform);
                 Cube cube = piece.GetComponent<Cube>();
                 RectTransform rect = piece.GetComponent<RectTransform>();
@@ -377,6 +377,10 @@ public class GameManager : MonoBehaviour
     public void LoadData()
     {
         levelNumber =  PlayerPrefs.GetInt("Level");
+        if (levelNumber == 0)
+        {
+            levelNumber = 1;
+        }
         if (PlayerPrefs.HasKey("LevelName"))
         {
             var levelName = PlayerPrefs.GetString("LevelName");
