@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class GameBoardCube
 {
-    public int value; //1 = water, 2 = fire
+    public int value; //0 = blank, 1 = water, 2 = fire, -1 = hole
     public Point index;
     public Cube cube;
 

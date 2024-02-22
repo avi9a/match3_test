@@ -7,14 +7,14 @@
 // public class GameData
 // {
 //     // public int level;
-//     public float[] position;
+//     public int indexx;
+//     public int indexy;
 //
 //     public GameData(/*GameManager game,*/ Cube block)
 //     {
 //         // level = game.levelNumber;
 //
-//         position = new float[2];
-//         position[0] = block.position.x;
-//         position[1] = block.position.y;
+//         indexx = block.index.x;
+//         indexy = block.index.y;
 //     }
 // }

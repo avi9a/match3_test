@@ -66,6 +66,18 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             return false;
         }
     }
+    
+    public void SaveData()
+    {
+        PlayerPrefs.SetInt("IndexX", index.x);
+        PlayerPrefs.SetInt("IndexY", index.y);
+    }
+
+    public void LoadData()
+    {
+        index.x =  PlayerPrefs.GetInt("IndexX");
+        index.y =  PlayerPrefs.GetInt("IndexY");
+    }
 
     public void OnPointerDown(PointerEventData eventData)
     {
