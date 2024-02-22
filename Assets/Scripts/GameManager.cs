@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
 {
     public Level level;
     public List<Level> levels;
-    public int levelNumber = 1;
+    public int levelNumber;
     [Header("UI Elements")] public RectTransform gameBoardTransform;
     [Header("Prefabs")] public GameObject boardBlock;
     private int width = 5;
@@ -156,6 +156,7 @@ public class GameManager : MonoBehaviour
                 RectTransform rect = piece.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(50 + (64 * x), -50 - (64 * y));
                 value = level.blockValues[index];
+                cube.LoadData(x, y);
                 cube.Initialize(value,  new Point(x, y), level.blocks[value - 1]);
                 board.SetCube(cube);
                 index++;
@@ -163,7 +164,7 @@ public class GameManager : MonoBehaviour
                 animator = cube.GetComponent<Animator>();
                 animator.runtimeAnimatorController = cube.value == 1 ? level.animatorWater : level.animatorFire;
                 
-                // Load(cube);
+                // cube.LoadData();
             }
         }
     }
@@ -253,7 +254,7 @@ public class GameManager : MonoBehaviour
             }
 
             if (same > 1)
-                AddPionts(ref connected, line);
+                AddPoints(ref connected, line);
         }
 
         for (int i = 0; i < 2; i++) //checking if we are in the middle of 2 of the same blocks
@@ -273,7 +274,7 @@ public class GameManager : MonoBehaviour
             }
             
             if (same > 1)
-                AddPionts(ref connected, line);
+                AddPoints(ref connected, line);
         }
 
         // for (int i = 0; i < 4; i++) //check for a 2x2
@@ -301,7 +302,7 @@ public class GameManager : MonoBehaviour
         if (main) //check for other matches along the current match
         {
             for (int i = 0; i < connected.Count; i++)
-                AddPionts(ref connected, IsConnnected(connected[i], false));
+                AddPoints(ref connected, IsConnnected(connected[i], false));
         }
 
         if (connected.Count > 0)
@@ -309,7 +310,7 @@ public class GameManager : MonoBehaviour
         return connected;
     }
     
-    private void AddPionts(ref List<Point> points, List<Point> add)
+    private void AddPoints(ref List<Point> points, List<Point> add)
     {
         foreach (var point in add)
         {
