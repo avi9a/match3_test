@@ -33,13 +33,6 @@ public class GameManager : MonoBehaviour
     {
         StartGame();
     }
-
-    // private void Load(Cube cube)
-    // {
-    //     GameData data = SaveSystem.LoadBlock();
-    //     cube.index.x = data.indexx;
-    //     cube.index.y = data.indexy;
-    // }
     private void StartGame()
     {
         LoadData();
@@ -63,14 +56,12 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < finishedUpdating.Count; i++)
         {
             Cube cube = finishedUpdating[i];
-            List<Point> connected = IsConnnected(cube.index, true);
             indexX = cube.index.x;
             indexY = cube.index.y;
             
-            // GravityOnBoard();
-            
-            // if (connected.Count != 0)
-            // {
+            List<Point> connected = IsConnnected(cube.index, true);
+            if (connected.Count != 0)
+            {
                 foreach (Point point in connected)
                 {
                     GameBoardCube block = GetBlockAtPoint(point);
@@ -80,11 +71,9 @@ public class GameManager : MonoBehaviour
                     dead.Add(cube);
                     block.SetCube(null);
                 }
+            }
 
-                GravityOnBoard();
-            // }
-
-            // GravityOnBoard();
+            GravityOnBoard();
             update.Remove(cube);
         }
     }
@@ -156,7 +145,7 @@ public class GameManager : MonoBehaviour
                 RectTransform rect = piece.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(50 + (64 * x), -50 - (64 * y));
                 value = level.blockValues[index];
-                cube.LoadData(x, y);
+                // cube.LoadData(x, y);
                 cube.Initialize(value,  new Point(x, y), level.blocks[value - 1]);
                 board.SetCube(cube);
                 index++;
@@ -185,7 +174,6 @@ public class GameManager : MonoBehaviour
             Cube cubeTwo = pointTwo.GetCube();
             pointOne.SetCube(cubeTwo);
             pointTwo.SetCube(cubeOne);
-            // flipped.Add(new FlippedBlock(cubeOne, cubeTwo));
             var cubeOneIndex = cubeOne.transform.GetSiblingIndex();
             var cubeTwoIndex = cubeTwo.transform.GetSiblingIndex();
             update.Add(cubeOne);
@@ -200,19 +188,18 @@ public class GameManager : MonoBehaviour
             pointOne.SetCube(cubeTwo);
             pointTwo.SetCube(cubeOne);
             var index = cubeOne.transform.GetSiblingIndex();
-            // flipped.Add(new FlippedBlock(cubeOne, cubeTwo));
             update.Add(cubeOne);
             update.Add(cubeTwo);
-            var indexXX = cubeOne.index.x;
+            // var indexXX = cubeOne.index.x;
             // var indexYY = cubeOne.index.y;
-            if (indexX < indexXX)
-            {
-                cubeOne.transform.SetSiblingIndex(index + 1);
-            }
-            else if (indexX > indexXX)
-            {
-                cubeOne.transform.SetSiblingIndex(index - 1);
-            }
+            // if (indexX < indexXX)
+            // {
+            //     cubeOne.transform.SetSiblingIndex(index + 1);
+            // }
+            // else if (indexX > indexXX)
+            // {
+            //     cubeOne.transform.SetSiblingIndex(index - 1);
+            // }
             // else if (indexX == indexXX)
             // {
             //     if (indexY < indexYY)
@@ -229,6 +216,7 @@ public class GameManager : MonoBehaviour
     
     private List<Point> IsConnnected(Point point, bool main)
     {
+        Debug.Log("IsConnnected");
         List<Point> connected = new List<Point>();
         int value = GetValueAtPoint(point);
         Point[] directions =
@@ -254,7 +242,9 @@ public class GameManager : MonoBehaviour
             }
 
             if (same > 1)
+            {
                 AddPoints(ref connected, line);
+            }
         }
 
         for (int i = 0; i < 2; i++) //checking if we are in the middle of 2 of the same blocks
@@ -272,32 +262,34 @@ public class GameManager : MonoBehaviour
                     same++;
                 }
             }
-            
+
             if (same > 1)
+            {
                 AddPoints(ref connected, line);
+            }
         }
 
-        // for (int i = 0; i < 4; i++) //check for a 2x2
-        // {
-        //     List<Point> square = new List<Point>();
-        //     int same = 0;
-        //     int next = i + 1;
-        //     if (next >= 4)
-        //         next -= 4;
-        //
-        //     Point[] check = { Point.Add(point, directions[i]), Point.Add(point, directions[next]), Point.Add(point, Point.Add(directions[i], directions[next]))};
-        //     foreach (Point nextCheck in check)
-        //     {
-        //         if (GetValue(nextCheck) == value)
-        //         {
-        //             square.Add(nextCheck);
-        //             same++;
-        //         }
-        //     }
-        //
-        //     if (same > 2)
-        //         AddPionts(ref connected, square);
-        // }
+        for (int i = 0; i < 4; i++) //check for a 2x2
+        {
+            List<Point> square = new List<Point>();
+            int same = 0;
+            int next = i + 1;
+            if (next >= 4)
+                next -= 4;
+        
+            Point[] check = { Point.Add(point, directions[i]), Point.Add(point, directions[next]), Point.Add(point, Point.Add(directions[i], directions[next]))};
+            foreach (Point nextCheck in check)
+            {
+                if (GetValueAtPoint(nextCheck) == value)
+                {
+                    square.Add(nextCheck);
+                    same++;
+                }
+            }
+        
+            if (same > 2)
+                AddPoints(ref connected, square);
+        }
 
         if (main) //check for other matches along the current match
         {

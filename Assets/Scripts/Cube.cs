@@ -57,7 +57,7 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             MovePositionTo(position);
             isUpdating = true;
-            SaveData();
+            // SaveData();
             // SaveSystem.SaveBlock(this);
             return true;
         }
