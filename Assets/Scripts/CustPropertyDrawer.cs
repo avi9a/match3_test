@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
 [CustomPropertyDrawer(typeof(Board))]
-public class CustPropertyDrawer : PropertyDrawer {
-
+public class CustPropertyDrawer : PropertyDrawer
+{
 	public override void OnGUI(Rect position,SerializedProperty property,GUIContent label){
 		EditorGUI.PrefixLabel(position,label);
 		Rect newposition = position;
@@ -29,7 +30,8 @@ public class CustPropertyDrawer : PropertyDrawer {
 		}
 	}
 
-	public override float GetPropertyHeight(SerializedProperty property,GUIContent label){
+	public override float GetPropertyHeight(SerializedProperty property,GUIContent label)
+	{
 		return 9f * 15;
 	}
 }

@@ -16,7 +16,6 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void Initialize(int v, Point point, Sprite piece)
     {
-        // LoadData();
         image = GetComponent<Image>();
         rect = GetComponent<RectTransform>();
         value = v;
@@ -26,7 +25,7 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void SetIndex(Point point)
     {
-        index = point; //new Point(2, 2);
+        index = point;
         ResetPosition();
         UpdateName();
     }
@@ -57,8 +56,6 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             MovePositionTo(position);
             isUpdating = true;
-            // SaveData();
-            // SaveSystem.SaveBlock(this);
             return true;
         }
         else
@@ -67,31 +64,6 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             isUpdating = false;
             return false;
         }
-    }
-    
-    public void SaveData()
-    {
-        PlayerPrefs.SetInt("IndexX", index.x);
-        PlayerPrefs.SetInt("IndexY", index.y);
-        Debug.Log("Save indexes " + index.x + " " + index.y);
-        // PlayerPrefs.SetInt("PositionX", (int)position.x);
-        // PlayerPrefs.SetInt("PositionY", (int)position.y);
-        // Debug.Log("Save position " + position);
-        PlayerPrefs.Save();
-    }
-
-    public void LoadData(int x, int y)
-    {
-        x = index.x;
-        y = index.y;
-        index.x =  PlayerPrefs.GetInt("IndexX");
-        index.y =  PlayerPrefs.GetInt("IndexY");
-        Debug.Log("Load indexes " + index.x + " " + index.y);
-        // var blockPosition = position;
-        // blockPosition.x =  PlayerPrefs.GetInt("PositionX");
-        // blockPosition.y =  PlayerPrefs.GetInt("PositionY");
-        // position = blockPosition;
-        // Debug.Log("Load position " + blockPosition);
     }
 
     public void OnPointerDown(PointerEventData eventData)

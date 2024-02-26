@@ -65,5 +65,18 @@ public class Move : MonoBehaviour
         else 
             gameManager.ResetBlock(movingCube);
         movingCube = null;
+        SaveData();
+    }
+
+    public void SaveData()
+    {
+        var cubes = gameManager.gameBoardTransform.GetComponentsInChildren<Cube>();
+        for (int i = 0; i < cubes.Length; i++)
+        {
+            Point cubeIndex = cubes[i].index;
+            PlayerPrefs.SetInt("cubeIndexX"+i, cubeIndex.x);
+            PlayerPrefs.SetInt("cubeIndexY"+i, cubeIndex.y);
+            PlayerPrefs.Save();
+        }
     }
 }
