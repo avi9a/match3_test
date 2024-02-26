@@ -133,6 +133,12 @@ public class GameManager : MonoBehaviour
 
     private void GravityOnBoard()
     {
+        StartCoroutine(WaitAndFall());
+    }
+    
+    private IEnumerator WaitAndFall()
+    {
+        yield return new WaitForSeconds(0.8f);
         for (int x = 0; x < width; x++)
         {
             for (int y = height - 1; y >= 0; y--)
