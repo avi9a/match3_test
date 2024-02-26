@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
         if (PlayerPrefs.HasKey("StartGame"))
         {
             start = true;
+            LoadData();
         }
         else
         {
