@@ -433,26 +433,15 @@ public class GameManager : MonoBehaviour
     public void RestartLevel()
     {
         start = false;
-        var blocks = gameBoardTransform.GetComponentsInChildren<Cube>();
-        foreach (var block in blocks)
-        {
-            block.transform.gameObject.SetActive(false);
-            Destroy(block);
-        }
         level = levels[levelNumber - 1];
         SaveData();
+        SceneManager.LoadScene("Main");
         StartGame();
     }
     
     public void NextLevel()
     {
         start = false;
-        var blocks = gameBoardTransform.GetComponentsInChildren<Cube>();
-        foreach (var block in blocks)
-        {
-            block.transform.gameObject.SetActive(false);
-            Destroy(block);
-        }
         levelNumber += 1;
         if (levelNumber > levels.Count)
         {
@@ -460,6 +449,7 @@ public class GameManager : MonoBehaviour
         }
         level = levels[levelNumber - 1];
         SaveData();
+        SceneManager.LoadScene("Main");
         StartGame();
     }
 
@@ -476,6 +466,7 @@ public class GameManager : MonoBehaviour
             }
             level = levels[levelNumber - 1];
             SaveData();
+            SceneManager.LoadScene("Main");
             StartGame();
         }
     }
