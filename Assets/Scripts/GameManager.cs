@@ -281,29 +281,7 @@ public class GameManager : MonoBehaviour
                 AddPoints(ref connected, line);
             }
         }
-
-        for (int i = 0; i < 2; i++) //checking if we are in the middle of 2 of the same blocks
-        {
-            List<Point> line = new List<Point>();
-            int same = 0;
-            Point next = Point.Add(point, directions[i]);
-            Point nextTwo = Point.Add(point, directions[i + 2]);
-            Point[] check = { next, nextTwo };
-            foreach (Point nextCheck in check) //checking both sides of the block
-            {
-                if (GetValueAtPoint(nextCheck) == value)
-                {
-                    line.Add(nextCheck);
-                    same++;
-                }
-            }
-
-            if (same > 1)
-            {
-                AddPoints(ref connected, line);
-            }
-        }
-
+        
         for (int i = 0; i < 4; i++) //check for a 2x2
         {
             List<Point> square = new List<Point>();
