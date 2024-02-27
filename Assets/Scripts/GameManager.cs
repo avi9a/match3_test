@@ -20,8 +20,6 @@ public class GameManager : MonoBehaviour
     private int width = 5;
     private int height = 6;
 
-    private SystemRandom random;
-
     private List<Cube> update;
     private List<Cube> dead;
 
@@ -57,8 +55,6 @@ public class GameManager : MonoBehaviour
     }
     private void StartGame()
     {
-        string seed = GetRandomSeed();
-        random = new SystemRandom(seed.GetHashCode());
         update = new List<Cube>();
         dead = new List<Cube>();
         InitializeBoard();
@@ -67,14 +63,33 @@ public class GameManager : MonoBehaviour
         // Load
         if (start)
         {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = height - 1; y >= 0; y--)
+                {
+                    Point point = new Point(x, y);
+                    GameBoardCube block = GetBlockAtPoint(point);
+                    block.value = PlayerPrefs.GetInt("Value"+block.index.x+block.index.y);
+
+                    if (PlayerPrefs.HasKey("Value" + block.index.x + block.index.y))
+                    {
+                        level.gameBoard[x, y] = new GameBoardCube(block.value, new Point(x, y));
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
+
             var cubes = gameBoardTransform.GetComponentsInChildren<Cube>();
             for (int i = 0; i < cubes.Length; i++)
             {
                 if (PlayerPrefs.HasKey("cubeIndexX" + i))
                 {
-                    GameBoardCube block = GetBlockAtPoint(cubes[i].index);
                     cubes[i].index.x = PlayerPrefs.GetInt("cubeIndexX" + i);
                     cubes[i].index.y = PlayerPrefs.GetInt("cubeIndexY" + i);
+                    GameBoardCube block = GetBlockAtPoint(cubes[i].index);
                     cubes[i].rect.anchoredPosition = new Vector2(50 + (64 * cubes[i].index.x), -50 - (64 * cubes[i].index.y));
                     cubes[i].SetIndex(cubes[i].index);
                     block.SetCube(cubes[i]);
@@ -147,6 +162,10 @@ public class GameManager : MonoBehaviour
                 Point point = new Point(x, y);
                 GameBoardCube block = GetBlockAtPoint(point);
                 int value = GetValueAtPoint(point);
+                
+                PlayerPrefs.SetInt("Value"+block.index.x+block.index.y, block.value);
+                PlayerPrefs.Save();
+                
                 if (value != 0) continue; //if it is not a hole => do nothing
                 for (int nexty = y-1; nexty >= -1; nexty--)
                 {
@@ -213,56 +232,22 @@ public class GameManager : MonoBehaviour
     {
         GameBoardCube pointOne = GetBlockAtPoint(one);
         Cube cubeOne = pointOne.GetCube();
-        // if (GetValueAtPoint(two) > 0)
-        // {
-            GameBoardCube pointTwo = GetBlockAtPoint(two);
-            Cube cubeTwo = pointTwo.GetCube();
-            pointOne.SetCube(cubeTwo);
-            pointTwo.SetCube(cubeOne);
-            var cubeOneIndex = 0;
-            if (cubeOneIndex != null && cubeOne != null)
-                cubeOneIndex = cubeOne.transform.GetSiblingIndex();
-            var cubeTwoIndex = 0;
-            if (cubeTwoIndex != 0 && cubeTwo != null)
-                cubeTwoIndex = cubeTwo.transform.GetSiblingIndex();
-            update.Add(cubeOne);
-            update.Add(cubeTwo);
-            if (cubeOneIndex != null && cubeTwo != null) 
-                cubeTwo.transform.SetSiblingIndex(cubeOneIndex);
-            if (cubeTwoIndex != 0 && cubeOne != null) 
-                cubeOne.transform.SetSiblingIndex(cubeTwoIndex);
-        // }
-        // else
-        // {
-            // GameBoardCube pointTwo = GetBlockAtPoint(two);
-            // Cube cubeTwo = pointTwo.GetCube();
-            // pointOne.SetCube(cubeTwo);
-            // pointTwo.SetCube(cubeOne);
-            // var index = cubeOne.transform.GetSiblingIndex();
-            // update.Add(cubeOne);
-            // update.Add(cubeTwo);
-            // var indexXX = cubeOne.index.x;
-            // var indexYY = cubeOne.index.y;
-            // if (indexX < indexXX)
-            // {
-            //     cubeOne.transform.SetSiblingIndex(index + 1);
-            // }
-            // else if (indexX > indexXX)
-            // {
-            //     cubeOne.transform.SetSiblingIndex(index - 1);
-            // }
-            // else if (indexX == indexXX)
-            // {
-            //     if (indexY < indexYY)
-            //     {
-            //         cubeOne.transform.SetSiblingIndex(index - 2);
-            //     }
-            //     else if (indexY > indexYY)
-            //     {
-            //         cubeOne.transform.SetSiblingIndex(index + 2);
-            //     }
-            // }
-        // }
+        GameBoardCube pointTwo = GetBlockAtPoint(two);
+        Cube cubeTwo = pointTwo.GetCube();
+        pointOne.SetCube(cubeTwo);
+        pointTwo.SetCube(cubeOne);
+        var cubeOneIndex = 0;
+        if (cubeOneIndex != null && cubeOne != null)
+            cubeOneIndex = cubeOne.transform.GetSiblingIndex();
+        var cubeTwoIndex = 0;
+        if (cubeTwoIndex != 0 && cubeTwo != null)
+            cubeTwoIndex = cubeTwo.transform.GetSiblingIndex();
+        update.Add(cubeOne);
+        update.Add(cubeTwo);
+        if (cubeOneIndex != null && cubeTwo != null) 
+            cubeTwo.transform.SetSiblingIndex(cubeOneIndex);
+        if (cubeTwoIndex != 0 && cubeOne != null) 
+            cubeOne.transform.SetSiblingIndex(cubeTwoIndex);
     }
     
     private List<Point> IsConnnected(Point point, bool main)
@@ -386,18 +371,6 @@ public class GameManager : MonoBehaviour
         return level.gameBoard[point.x, point.y];
     }
     
-    private int NewValue(ref List<int> remove)
-    {
-        List<int> available = new List<int>();
-        for (int i = 0; i < level.blocks.Length; i++)
-            available.Add(i + 1);
-        foreach (var i in remove)
-            available.Remove(i);
-    
-        if (available.Count <= 0) return 0;
-        return available[random.Next(0, available.Count)];
-    }
-    
     private string GetRandomSeed()
     {
         string seed = "";
@@ -433,15 +406,27 @@ public class GameManager : MonoBehaviour
     public void RestartLevel()
     {
         start = false;
+        var blocks = gameBoardTransform.GetComponentsInChildren<Cube>();
+        foreach (var block in blocks)
+        {
+            block.transform.gameObject.SetActive(false);
+            Destroy(block);
+        }
         level = levels[levelNumber - 1];
         SaveData();
-        SceneManager.LoadScene("Main");
+        // SceneManager.LoadScene("Main");
         StartGame();
     }
     
     public void NextLevel()
     {
         start = false;
+        var blocks = gameBoardTransform.GetComponentsInChildren<Cube>();
+        foreach (var block in blocks)
+        {
+            block.transform.gameObject.SetActive(false);
+            Destroy(block);
+        }
         levelNumber += 1;
         if (levelNumber > levels.Count)
         {
@@ -449,7 +434,7 @@ public class GameManager : MonoBehaviour
         }
         level = levels[levelNumber - 1];
         SaveData();
-        SceneManager.LoadScene("Main");
+        // SceneManager.LoadScene("Main");
         StartGame();
     }
 
@@ -466,7 +451,7 @@ public class GameManager : MonoBehaviour
             }
             level = levels[levelNumber - 1];
             SaveData();
-            SceneManager.LoadScene("Main");
+            // SceneManager.LoadScene("Main");
             StartGame();
         }
     }
