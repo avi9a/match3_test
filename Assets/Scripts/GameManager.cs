@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
         dead = new List<Cube>();
         InitializeBoard();
         InstantiateBoard();
-
+        
         // Load
         if (start)
         {
@@ -94,6 +94,11 @@ public class GameManager : MonoBehaviour
                     cubes[i].SetIndex(cubes[i].index);
                     block.SetCube(cubes[i]);
                     update.Add(cubes[i]);
+
+                    if (PlayerPrefs.HasKey("ActiveBlock" + i))
+                    {
+                        cubes[i].gameObject.SetActive(PlayerPrefs.GetInt("ActiveBlock" + i) == 1);
+                    }
                 }
                 else
                 {
@@ -143,6 +148,13 @@ public class GameManager : MonoBehaviour
         cubeAnimator.SetBool("Destroy", true);
         yield return new WaitForSeconds(1f);
         cubePiece.gameObject.SetActive(false);
+        
+        var cubes = gameBoardTransform.GetComponentsInChildren<Cube>(true);
+        for (int i = 0; i < cubes.Length; i++)
+        {
+            PlayerPrefs.SetInt("ActiveBlock"+i, cubes[i].gameObject.activeInHierarchy ? 1 : 0);
+            PlayerPrefs.Save();
+        }
 
         CompleteLevel();
     }
@@ -348,13 +360,7 @@ public class GameManager : MonoBehaviour
     {
         return level.gameBoard[point.x, point.y];
     }
-    
-    private string GetRandomSeed()
-    {
-        string seed = "";
-        return seed;
-    }
-    
+
     public Vector2 GetPositionFromPoint(Point point)
     {
         return new Vector2(50 + (64 * point.x), -50 - (64 * point.y));
@@ -388,11 +394,10 @@ public class GameManager : MonoBehaviour
         foreach (var block in blocks)
         {
             block.transform.gameObject.SetActive(false);
-            Destroy(block);
         }
         level = levels[levelNumber - 1];
         SaveData();
-        // SceneManager.LoadScene("Main");
+        
         StartGame();
     }
     
@@ -403,7 +408,6 @@ public class GameManager : MonoBehaviour
         foreach (var block in blocks)
         {
             block.transform.gameObject.SetActive(false);
-            Destroy(block);
         }
         levelNumber += 1;
         if (levelNumber > levels.Count)
@@ -411,9 +415,13 @@ public class GameManager : MonoBehaviour
             levelNumber = 1;
         }
         level = levels[levelNumber - 1];
+        
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.SetInt("StartGame", 1);
+        PlayerPrefs.Save();
+        
         SaveData();
-        // SceneManager.LoadScene("Main");
-        StartGame();
+        SceneManager.LoadScene("Main");
     }
 
     public void CompleteLevel()
@@ -428,9 +436,13 @@ public class GameManager : MonoBehaviour
                 levelNumber = 1;
             }
             level = levels[levelNumber - 1];
+            
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.SetInt("StartGame", 1);
+            PlayerPrefs.Save();
+            
             SaveData();
-            // SceneManager.LoadScene("Main");
-            StartGame();
+            SceneManager.LoadScene("Main");
         }
     }
 }

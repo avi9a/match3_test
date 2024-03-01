@@ -6,7 +6,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Level : ScriptableObject
 {
-    // public int levelNumber;
     public Board board;
     public Sprite[] blocks;
     private int width = 5;

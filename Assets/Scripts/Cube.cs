@@ -39,11 +39,6 @@ public class Cube : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         transform.name = "GameBoard [" + index.x + ", " + index.y + "]";
     }
-
-    // public void MovePosition(Vector2 move)
-    // {
-    //     rect.anchoredPosition += move * Time.deltaTime * 10f;
-    // }
     
     public void MovePositionTo(Vector2 move)
     {
