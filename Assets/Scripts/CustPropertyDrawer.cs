@@ -1,7 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 [CustomPropertyDrawer(typeof(Board))]
 public class CustPropertyDrawer : PropertyDrawer
@@ -13,7 +11,6 @@ public class CustPropertyDrawer : PropertyDrawer
 		SerializedProperty board = property.FindPropertyRelative("board");
         if (board.arraySize != 6)
 	        board.arraySize = 6;
-		//data.rows[0][]
 		for(int j=0;j<6;j++){
 			SerializedProperty elements = board.GetArrayElementAtIndex(j).FindPropertyRelative("elements");
 			newposition.height = 18f;

@@ -2,10 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using SystemRandom = System.Random;
 
@@ -312,7 +310,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         
-            if (same > 2)
+            if (same > 1)
                 AddPoints(ref connected, square);
         }
 
