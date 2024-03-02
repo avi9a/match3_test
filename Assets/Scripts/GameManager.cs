@@ -246,18 +246,24 @@ public class GameManager : MonoBehaviour
         Cube cubeTwo = pointTwo.GetCube();
         pointOne.SetCube(cubeTwo);
         pointTwo.SetCube(cubeOne);
-        var cubeOneIndex = 0;
-        if (cubeOneIndex != null && cubeOne != null)
-            cubeOneIndex = cubeOne.transform.GetSiblingIndex();
-        var cubeTwoIndex = 0;
-        if (cubeTwoIndex != 0 && cubeTwo != null)
-            cubeTwoIndex = cubeTwo.transform.GetSiblingIndex();
         update.Add(cubeOne);
         update.Add(cubeTwo);
-        if (cubeOneIndex != null && cubeTwo != null) 
-            cubeTwo.transform.SetSiblingIndex(cubeOneIndex);
-        if (cubeTwoIndex != 0 && cubeOne != null) 
-            cubeOne.transform.SetSiblingIndex(cubeTwoIndex);
+
+        int number = 0;
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = height - 1; y >= 0; y--)
+            {
+                Point point = new Point(x, y);
+                GameBoardCube block = GetBlockAtPoint(point);
+                Cube cube = block.GetCube();
+                if (cube != null)
+                {
+                    cube.transform.SetSiblingIndex(number);
+                }
+                number++;
+            }
+        }
     }
     
     private List<Point> IsConnnected(Point point, bool main)
@@ -292,27 +298,27 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        for (int i = 0; i < 4; i++) //check for a 2x2
-        {
-            List<Point> square = new List<Point>();
-            int same = 0;
-            int next = i + 1;
-            if (next >= 4)
-                next -= 4;
-        
-            Point[] check = { Point.Add(point, directions[i]), Point.Add(point, directions[next]), Point.Add(point, Point.Add(directions[i], directions[next]))};
-            foreach (Point nextCheck in check)
-            {
-                if (GetValueAtPoint(nextCheck) == value)
-                {
-                    square.Add(nextCheck);
-                    same++;
-                }
-            }
-        
-            if (same > 1)
-                AddPoints(ref connected, square);
-        }
+        // for (int i = 0; i < 4; i++) //check for a 2x2
+        // {
+        //     List<Point> square = new List<Point>();
+        //     int same = 0;
+        //     int next = i + 1;
+        //     if (next >= 4)
+        //         next -= 4;
+        //
+        //     Point[] check = { Point.Add(point, directions[i]), Point.Add(point, directions[next]), Point.Add(point, Point.Add(directions[i], directions[next]))};
+        //     foreach (Point nextCheck in check)
+        //     {
+        //         if (GetValueAtPoint(nextCheck) == value)
+        //         {
+        //             square.Add(nextCheck);
+        //             same++;
+        //         }
+        //     }
+        //
+        //     if (same > 1)
+        //         AddPoints(ref connected, square);
+        // }
 
         if (main) //check for other matches along the current match
         {
