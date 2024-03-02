@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Random = UnityEngine.Random;
-using SystemRandom = System.Random;
 
 [Serializable]
 public class GameManager : MonoBehaviour
@@ -22,10 +19,6 @@ public class GameManager : MonoBehaviour
     private List<Cube> dead;
 
     private Animator animator;
-    public List<GameObject> balloons;
-
-    private int indexX;
-    private int indexY;
 
     public bool start;
 
@@ -41,12 +34,6 @@ public class GameManager : MonoBehaviour
             start = false;
             PlayerPrefs.SetInt("StartGame", 1);
             PlayerPrefs.Save();
-        }
-
-        foreach (var balloon in balloons)
-        {
-            balloon.transform.DOLocalMoveX(Random.Range(0f, 1f), Random.Range(1, 3)).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
-            balloon.transform.DOLocalMoveY(500f, Random.Range(5, 10)).SetLoops(-1, LoopType.Restart);
         }
 
         StartGame();
@@ -118,8 +105,6 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < finishedUpdating.Count; i++)
         {
             Cube cube = finishedUpdating[i];
-            indexX = cube.index.x;
-            indexY = cube.index.y;
             
             List<Point> connected = IsConnnected(cube.index, true);
             if (connected.Count != 0)
