@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     private Animator animator;
 
     public bool start;
+    public bool nextLevel;
 
     private void Start()
     {
@@ -38,6 +40,7 @@ public class GameManager : MonoBehaviour
 
         StartGame();
     }
+    
     private void StartGame()
     {
         update = new List<Cube>();
@@ -46,8 +49,9 @@ public class GameManager : MonoBehaviour
         InstantiateBoard();
         
         // Load
-        if (start)
+        if (start && !nextLevel)
         {
+            Debug.Log("it is the same level");
             for (int x = 0; x < width; x++)
             {
                 for (int y = height - 1; y >= 0; y--)
@@ -91,6 +95,15 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+        
+        Invoke(nameof(ResetNewLevel), 1);
+    }
+    
+    private void ResetNewLevel()
+    {
+        nextLevel = false;
+        PlayerPrefs.SetInt("NextLevel", nextLevel ? 1 : 0);
+        PlayerPrefs.Save();
     }
 
     private void Update()
@@ -105,8 +118,8 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < finishedUpdating.Count; i++)
         {
             Cube cube = finishedUpdating[i];
-            
-            List<Point> connected = IsConnnected(cube.index, true);
+
+            List<Point> connected = IsConnected(cube.index, true);
             if (connected.Count != 0)
             {
                 foreach (Point point in connected)
@@ -251,7 +264,7 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    private List<Point> IsConnnected(Point point, bool main)
+    private List<Point> IsConnected(Point point, bool main)
     {
         List<Point> connected = new List<Point>();
         int value = GetValueAtPoint(point);
@@ -283,32 +296,54 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        // for (int i = 0; i < 4; i++) //check for a 2x2
-        // {
-        //     List<Point> square = new List<Point>();
-        //     int same = 0;
-        //     int next = i + 1;
-        //     if (next >= 4)
-        //         next -= 4;
-        //
-        //     Point[] check = { Point.Add(point, directions[i]), Point.Add(point, directions[next]), Point.Add(point, Point.Add(directions[i], directions[next]))};
-        //     foreach (Point nextCheck in check)
-        //     {
-        //         if (GetValueAtPoint(nextCheck) == value)
-        //         {
-        //             square.Add(nextCheck);
-        //             same++;
-        //         }
-        //     }
-        //
-        //     if (same > 1)
-        //         AddPoints(ref connected, square);
-        // }
+        for (int i = 0; i < 2; i++) //checking if we are in the middle of 2 of the same blocks
+        {
+            List<Point> line = new List<Point>();
+            int same = 0;
+            Point next = Point.Add(point, directions[i]);
+            Point nextTwo = Point.Add(point, directions[i + 2]);
+            Point[] check = { next, nextTwo };
+            foreach (Point nextCheck in check) //checking both sides of the block
+            {
+                if (GetValueAtPoint(nextCheck) == value)
+                {
+                    line.Add(nextCheck);
+                    same++;
+                }
+            }
+
+            if (same > 1)
+            {
+                AddPoints(ref connected, line);
+            }
+        }
+        
+        for (int i = 0; i < 4; i++) //check for a 2x2
+        {
+            List<Point> square = new List<Point>();
+            int same = 0;
+            int next = i + 1;
+            if (next >= 4)
+                next -= 4;
+        
+            Point[] check = { Point.Add(point, directions[i]), Point.Add(point, directions[next]), Point.Add(point, Point.Add(directions[i], directions[next]))};
+            foreach (Point nextCheck in check)
+            {
+                if (GetValueAtPoint(nextCheck) == value)
+                {
+                    square.Add(nextCheck);
+                    same++;
+                }
+            }
+        
+            if (same > 2)
+                AddPoints(ref connected, square);
+        }
 
         if (main) //check for other matches along the current match
         {
             for (int i = 0; i < connected.Count; i++)
-                AddPoints(ref connected, IsConnnected(connected[i], false));
+                AddPoints(ref connected, IsConnected(connected[i], false));
         }
 
         if (connected.Count > 0)
@@ -359,6 +394,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("Level", levelNumber);
         PlayerPrefs.SetString("LevelName", level.name);
+        PlayerPrefs.SetInt("NextLevel", nextLevel ? 1 : 0);
         PlayerPrefs.Save();
     }
 
@@ -374,6 +410,7 @@ public class GameManager : MonoBehaviour
             var levelName = PlayerPrefs.GetString("LevelName");
             level = Resources.Load<Level>(levelName);
         }
+        nextLevel = PlayerPrefs.GetInt("NextLevel") == 1;
     }
     
     public void RestartLevel()
@@ -385,8 +422,8 @@ public class GameManager : MonoBehaviour
             block.transform.gameObject.SetActive(false);
         }
         level = levels[levelNumber - 1];
+        nextLevel = true;
         SaveData();
-        
         StartGame();
     }
     
@@ -404,13 +441,11 @@ public class GameManager : MonoBehaviour
             levelNumber = 1;
         }
         level = levels[levelNumber - 1];
-        
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.SetInt("StartGame", 1);
-        PlayerPrefs.Save();
-        
+        DeleteData();
+        nextLevel = true;
         SaveData();
         SceneManager.LoadScene("Main");
+        StartGame();
     }
 
     public void CompleteLevel()
@@ -425,13 +460,18 @@ public class GameManager : MonoBehaviour
                 levelNumber = 1;
             }
             level = levels[levelNumber - 1];
-            
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.SetInt("StartGame", 1);
-            PlayerPrefs.Save();
-            
+            DeleteData();
+            nextLevel = true;
             SaveData();
             SceneManager.LoadScene("Main");
+            StartGame();
         }
+    }
+
+    private void DeleteData()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.SetInt("StartGame", 1);
+        PlayerPrefs.Save();
     }
 }
