@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,8 +20,8 @@ public class GameManager : MonoBehaviour
 
     private Animator animator;
 
-    public bool start;
-    public bool nextLevel;
+    private bool start;
+    private bool nextLevel;
 
     private void Start()
     {
@@ -51,7 +50,6 @@ public class GameManager : MonoBehaviour
         // Load
         if (start && !nextLevel)
         {
-            Debug.Log("it is the same level");
             for (int x = 0; x < width; x++)
             {
                 for (int y = height - 1; y >= 0; y--)
@@ -318,7 +316,7 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        for (int i = 0; i < 4; i++) //check for a 2x2
+        for (int i = 0; i < 4; i++)
         {
             List<Point> square = new List<Point>();
             int same = 0;
@@ -435,6 +433,22 @@ public class GameManager : MonoBehaviour
         {
             block.transform.gameObject.SetActive(false);
         }
+
+        LoadNewLevel();
+    }
+
+    public void CompleteLevel()
+    {
+        start = false;
+        var blocks = gameBoardTransform.GetComponentsInChildren<Cube>();
+        if (blocks.Length <= 0)
+        {
+            LoadNewLevel();
+        }
+    }
+
+    private void LoadNewLevel()
+    {
         levelNumber += 1;
         if (levelNumber > levels.Count)
         {
@@ -446,26 +460,6 @@ public class GameManager : MonoBehaviour
         SaveData();
         SceneManager.LoadScene("Main");
         StartGame();
-    }
-
-    public void CompleteLevel()
-    {
-        start = false;
-        var blocks = gameBoardTransform.GetComponentsInChildren<Cube>();
-        if (blocks.Length <= 0)
-        {
-            levelNumber += 1;
-            if (levelNumber > levels.Count)
-            {
-                levelNumber = 1;
-            }
-            level = levels[levelNumber - 1];
-            DeleteData();
-            nextLevel = true;
-            SaveData();
-            SceneManager.LoadScene("Main");
-            StartGame();
-        }
     }
 
     private void DeleteData()

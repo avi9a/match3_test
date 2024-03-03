@@ -65,7 +65,7 @@ public class Move : MonoBehaviour
         SaveData();
     }
 
-    public void SaveData()
+    private void SaveData()
     {
         var cubes = gameManager.gameBoardTransform.GetComponentsInChildren<Cube>();
         for (int i = 0; i < cubes.Length; i++)
